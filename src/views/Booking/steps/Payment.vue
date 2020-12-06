@@ -175,7 +175,6 @@ export default {
 		}
 	},
 	created() {
-		console.log('>>>>>>>',this.$store.getters.getCreditCard)
 		this.payment = this.$store.getters.getCreditCard
 	},
 	methods: {
@@ -222,7 +221,6 @@ export default {
 						})
 						
 				} else {
-					console.log(typeof this.$refs.form.errors)
 					let errorMessage = ''
 					Object.keys(this.$refs.form.errors).forEach((key) => {
 						this.$refs.form.errors[key].forEach((error) => {

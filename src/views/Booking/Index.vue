@@ -260,7 +260,6 @@ export default {
 	watch: {
 		$route: {
 			handler(to, from) {
-				console.log(from && from.path, to.path, from, to)
 				if (!from && to.path != this.steps[0].route )
 					return this.$router.replace(this.steps[0].route)
 				this.steps.forEach((step, index) => {

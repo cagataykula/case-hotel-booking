@@ -140,7 +140,6 @@ export default {
 			this.$refs.form.validate().then((valid) => {
 				if (valid) return this.$emit('next-step')
 				else {
-					console.log(typeof this.$refs.form.errors)
 					let errorMessage = ''
 					Object.keys(this.$refs.form.errors).forEach((key) => {
 						this.$refs.form.errors[key].forEach((error) => {
