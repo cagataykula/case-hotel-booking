@@ -202,7 +202,7 @@ export default {
 				.fire({
 					title: 'You Finished Steps.',
 					html:
-						"You can see the post data from the developer console.<br><br>I'm not keeping credit card data in the localStorage.<br><br>Do you want me to delete other data?",
+						'You can see the post data from the developer console.<br><br>Do you want me to delete your all data?',
 					icon: 'success',
 					showCancelButton: true,
 					confirmButtonText: 'Yes',
@@ -212,25 +212,36 @@ export default {
 				.then((result) => {
 					if (result.isConfirmed) {
 						this.$store.dispatch('clearBookingData').then(() => {
-							Swal.fire('Deleted!', 'localStorage cleaned.', 'success').then(
-								() => {
-									swalMixin
-										.fire({
-											text: 'Do you want me to redirect you to the homepage?',
-											icon: 'success',
-											showCancelButton: true,
-											confirmButtonText: 'Yes',
-											cancelButtonText: 'No',
-											reverseButtons: true
-										})
-										.then((result) => {
-											if (result.isConfirmed) {
-												this.$router.push('/')
-											}
-										})
-								}
-							)
+							Swal.fire('Deleted!', 'localStorage cleaned.', 'success').then(() => {
+								this.redirectHomePageModal()
+							})
 						})
+					}
+					this.redirectHomePageModal()
+				})
+		},
+		redirectHomePageModal() {
+			const swalMixin = Swal.mixin({
+				customClass: {
+					confirmButton: 'btn btn-primary m-2',
+					cancelButton: 'btn btn-danger m-2'
+				},
+				buttonsStyling: false
+			})
+			swalMixin
+				.fire({
+					text: 'Do you want me to redirect you to the homepage?',
+					icon: 'success',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+					reverseButtons: true
+				})
+				.then((result) => {
+					if (result.isConfirmed) {
+						this.$router.push('/')
+					} else {
+						this.$router.push('/booking')
 					}
 				})
 		}

@@ -10,7 +10,8 @@ export default new Vuex.Store({
 	getters: {
 		getField,
 		getDates: (state) => state.dates,
-		getRoomSpecs: (state) => state.roomSpecs
+		getRoomSpecs: (state) => state.roomSpecs,
+		getCreditCard: (state) => state.creditCard
 	},
 	state: {
 		dates: {
@@ -38,6 +39,13 @@ export default new Vuex.Store({
 		roomSpecs: {
 			type: localStorage.getItem('roomType'),
 			view: localStorage.getItem('roomView')
+		},
+		creditCard: {
+			nameSurname: localStorage.getItem('creditCardHolderName') || '',
+			cardNumber: localStorage.getItem('creditCardNumber') || '',
+			month: localStorage.getItem('creditCardMonth') || '',
+			year: localStorage.getItem('creditCardYear') || '',
+			cvv: localStorage.getItem('creditCardCVV') || ''
 		}
 	},
 	mutations: {
@@ -47,6 +55,9 @@ export default new Vuex.Store({
 		},
 		setRoomSpecs(state, roomSpecs) {
 			state.roomSpecs = roomSpecs
+		},
+		setCreditCard(state, creditCard) {
+			state.creditCard = creditCard
 		}
 	},
 	actions: {
@@ -76,16 +87,19 @@ export default new Vuex.Store({
 			commit('setRoomSpecs', payload)
 		},
 		makePayment({ getters }, payload) {
-			const { checkInDate, checkOutDate } = getters.getDates.raw
-			const dates = { checkInDate, checkOutDate }
-			const roomSpecs = getters.getRoomSpecs
-
-			const postData = {
-				dates,
-				roomSpecs,
-				payment: payload
-			}
-			console.log('BOOKING INFORMATION:', postData)
+			return new Promise((resolve) => {
+				const { checkInDate, checkOutDate } = getters.getDates.raw
+				const dates = { checkInDate, checkOutDate }
+				const roomSpecs = getters.getRoomSpecs
+	
+				const postData = {
+					dates,
+					roomSpecs,
+					payment: payload
+				}
+				console.log('BOOKING INFORMATION:', postData)
+				resolve()
+			})
 		},
 		clearBookingData({ state }) {
 			return new Promise((resolve) => {
@@ -105,12 +119,36 @@ export default new Vuex.Store({
 					view: null
 				}
 
+				state.creditCard = {
+					nameSurname: '',
+					cardNumber: '',
+					month: '',
+					year: '',
+					cvv: ''
+				}
+
 				localStorage.removeItem('checkInDate')
 				localStorage.removeItem('checkOutDate')
+
 				localStorage.removeItem('roomType')
 				localStorage.removeItem('roomView')
+
+				localStorage.removeItem('creditCardHolderName')
+				localStorage.removeItem('creditCardNumber')
+				localStorage.removeItem('creditCardMonth')
+				localStorage.removeItem('creditCardYear')
+				localStorage.removeItem('creditCardCVV')
 				resolve()
 			})
+		},
+		saveCreditCard({ commit }, payload) {
+			const { nameSurname, cardNumber, month, year, cvv } = payload
+			localStorage.setItem('creditCardHolderName', nameSurname)
+			localStorage.setItem('creditCardNumber', cardNumber)
+			localStorage.setItem('creditCardMonth', month)
+			localStorage.setItem('creditCardYear', year)
+			localStorage.setItem('creditCardCVV', cvv)
+			commit('setCreditCard', payload)
 		}
 	}
 })

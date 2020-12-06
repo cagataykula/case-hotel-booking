@@ -137,7 +137,7 @@ export default {
 						})
 					})
 					Swal.fire({
-						title: 'Missing Fields!',
+						title: 'Error',
 						html: errorMessage,
 						icon: 'error',
 						confirmButtonText: 'OK'

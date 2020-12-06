@@ -22,24 +22,6 @@
 		<ValidationObserver ref="form">
 			<div class="col-md-12 mt-4" style="max-width: 450px;">
 				<ValidationProvider
-					vid="cardNumber"
-					name="Card Number"
-					rules="required|numeric|min:13|max:19"
-					v-slot="{ errors }"
-					slim
-				>
-					<div class="form-group text-left">
-						<label for="card-number">Card Number</label>
-						<input
-							v-model="payment.cardNumber"
-							type="text"
-							id="card-number"
-							class="form-control"
-							:class="{ 'validation-error': errors[0] }"
-						/>
-					</div>
-				</ValidationProvider>
-				<ValidationProvider
 					vid="nameSurname"
 					name="Name Surname"
 					rules="required"
@@ -57,6 +39,24 @@
 								:class="{ 'validation-error': errors[0] }"
 							/>
 						</div>
+					</div>
+				</ValidationProvider>
+				<ValidationProvider
+					vid="cardNumber"
+					name="Card Number"
+					rules="required|numeric|min:13|max:19"
+					v-slot="{ errors }"
+					slim
+				>
+					<div class="form-group text-left">
+						<label for="card-number">Card Number</label>
+						<input
+							v-model="payment.cardNumber"
+							type="text"
+							id="card-number"
+							class="form-control"
+							:class="{ 'validation-error': errors[0] }"
+						/>
 					</div>
 				</ValidationProvider>
 				<div class="form-group row">
@@ -147,7 +147,7 @@
 					&lt; Dates
 				</button>
 				<button type="button" class="btn btn-primary mr-3 ml-3" @click="submit">
-					Payment &gt;
+					Pay &gt;
 				</button>
 			</div>
 		</div>
@@ -169,10 +169,14 @@ export default {
 				cardNumber: '',
 				month: '',
 				year: '',
-				cvv: '',
+				cvv: ''
 			},
 			flip: false
 		}
+	},
+	created() {
+		console.log('>>>>>>>',this.$store.getters.getCreditCard)
+		this.payment = this.$store.getters.getCreditCard
 	},
 	methods: {
 		backStep() {
@@ -181,10 +185,43 @@ export default {
 		submit() {
 			this.$refs.form.validate().then((valid) => {
 				if (valid) {
-					this.$store.dispatch('makePayment', this.payment)
-					return this.$emit('finish-steps')
-				}
-				else {
+					const swalMixin = Swal.mixin({
+						customClass: {
+							confirmButton: 'btn btn-primary m-2',
+							cancelButton: 'btn btn-danger m-2'
+						},
+						buttonsStyling: false
+					})
+
+					swalMixin
+						.fire({
+							html: 'Do you want me to save credit card data?',
+							icon: 'question',
+							showCancelButton: true,
+							confirmButtonText: 'Yes',
+							cancelButtonText: 'No',
+							reverseButtons: true
+						})
+						.then((result) => {
+							if (result.isConfirmed) {
+								this.$store.dispatch('saveCreditCard', this.payment)
+							}
+						})
+						.finally(() => {
+							this.$store.dispatch('makePayment', this.payment).then(() => {
+								this.payment = {
+									nameSurname: '',
+									cardNumber: '',
+									month: '',
+									year: '',
+									cvv: ''
+								}
+								this.$refs.form.reset()
+							})
+							return this.$emit('finish-steps')
+						})
+						
+				} else {
 					console.log(typeof this.$refs.form.errors)
 					let errorMessage = ''
 					Object.keys(this.$refs.form.errors).forEach((key) => {
@@ -193,7 +230,7 @@ export default {
 						})
 					})
 					Swal.fire({
-						title: 'Missing Fields!',
+						title: 'Error',
 						html: errorMessage,
 						icon: 'error',
 						confirmButtonText: 'OK'
@@ -205,4 +242,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.validation-error {
+	border-color: rgb(255, 0, 0) !important;
+}
+</style>
