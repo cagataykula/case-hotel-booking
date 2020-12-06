@@ -4,26 +4,45 @@
 			<div class="card-front">
 				<div class="card-top">
 					<div class="card-provider">
-						<img src="../assets/card-providers/mastercard.png" alt="" />
+						<img :src="getCardTypeImage()" alt="" />
 					</div>
 				</div>
 				<div class="card-number card-font">
-					<span :style="{ color: fontColor }" :class="{'card-text-placeholder': !formattedCardNumber && cardNumberPlaceholder}">
+					<span
+						:style="{ color: fontColor }"
+						:class="{
+							'card-text-placeholder':
+								!formattedCardNumber && cardNumberPlaceholder
+						}"
+					>
 						{{ formattedCardNumber || cardNumberPlaceholder }}
 					</span>
 				</div>
 				<div class="card-bottom">
 					<div class="card-holder card-font">
-						<span :style="{ color: fontColor }" :class="{'card-text-placeholder': !cardHolder && cardHolderPlaceholder}">
+						<span
+							:style="{ color: fontColor }"
+							:class="{
+								'card-text-placeholder': !cardHolder && cardHolderPlaceholder
+							}"
+						>
 							{{ cardHolder || cardHolderPlaceholder }}
 						</span>
 					</div>
 					<div class="card-expire card-font">
 						<span class="card-expire-tip">VALID THRU</span>
-						<span class="card-expire-dates" :style="{ color: fontColor }" :class="{'card-text-placeholder': (!expireMonth && expireMonthPlaceholder) || (!expireYear && expireYearPlaceholder)}">
+						<span
+							class="card-expire-dates"
+							:style="{ color: fontColor }"
+							:class="{
+								'card-text-placeholder':
+									(!expireMonth && expireMonthPlaceholder) ||
+									(!expireYear && expireYearPlaceholder)
+							}"
+						>
 							<template v-if="expireMonth || expireMonthPlaceholder">{{ expireMonth || expireMonthPlaceholder }}</template>
 							<span
-								v-if="expireMonth && expireYear || expireMonthPlaceholder && expireYearPlaceholder"
+								v-if="(expireMonth && expireYear) || (expireMonthPlaceholder && expireYearPlaceholder)"
 								class="card-expire-divider"
 							>/</span>
 							<template>{{ expireYear || expireMonthPlaceholder }}</template>
@@ -32,13 +51,20 @@
 				</div>
 			</div>
 			<div class="card-back">
-				<div class="card-cvv card-font text-dark" :class="{'card-text-placeholder': !cvv && cvvPlaceholder}">{{ cvv || cvvPlaceholder }}</div>
+				<div
+					class="card-cvv card-font text-dark"
+					:class="{ 'card-text-placeholder': !cvv && cvvPlaceholder }"
+				>
+					{{ cvv || cvvPlaceholder }}
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import creditCardType from 'creditcards-types'
+
 export default {
 	props: {
 		cardHolder: {
@@ -102,6 +128,11 @@ export default {
 			default: false
 		}
 	},
+	data() {
+		return {
+			cardType: ''
+		}
+	},
 	computed: {
 		fontClass: function() {
 			return {
@@ -113,7 +144,34 @@ export default {
 			return value ? value.join(' ').substring(0, 19) : this.cardNumber
 		}
 	},
-	methods: {}
+	methods: {
+		getCardTypeImage() {
+			switch (this.cardType) {
+				case 'Visa':
+					return require('../assets/images/credit-card/types/visa.png')
+				case 'Mastercard':
+					return require('../assets/images/credit-card/types/mastercard.png')
+				case 'Troy':
+					return require('../assets/images/credit-card/types/troy.png')
+				case 'American Express':
+					return require('../assets/images/credit-card/types/american-express.png')
+				case 'UnionPay':
+					return require('../assets/images/credit-card/types/union-pay.png')
+				default:
+					return require('../assets/images/credit-card/types/mastercard.png')
+			}
+		}
+	},
+	watch: {
+		cardNumber(val) {
+			const type = creditCardType.find((type) => type.test(val, true))
+			if(type) {
+				this.cardType = type.name
+			} else {
+				this.cardType = ''
+			}
+		}
+	}
 }
 </script>
 
@@ -175,7 +233,7 @@ export default {
 	height: 100%;
 	-webkit-backface-visibility: hidden !important;
 	backface-visibility: hidden;
-	background-image: url('../assets/card-front.png');
+	background-image: url('../assets/images/credit-card/card-front.png');
 	background-size: cover;
 	color: black;
 	border-radius: 10px;
@@ -185,12 +243,16 @@ export default {
 		display: flex;
 		justify-content: flex-end;
 		align-items: flex-end;
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding: 20px;
 		img {
 			width: 80px;
 		}
 	}
 	.card-number {
-		margin-top: 40px;
+		margin-top: 100px;
 		padding-top: 40px;
 		padding: 10px;
 		font-size: 19px;
@@ -203,7 +265,7 @@ export default {
 		justify-content: space-between;
 		flex-direction: row;
 		.card-holder {
-			margin-top: 90px;
+			margin-top: 145px;
 			font-size: 19px;
 			justify-content: flex-start;
 			padding-left: 20px;
@@ -239,7 +301,7 @@ export default {
 	height: 100%;
 	-webkit-backface-visibility: hidden;
 	backface-visibility: hidden;
-	background-image: url('../assets/card-back.png');
+	background-image: url('../assets/images/credit-card/card-back.png');
 	background-size: cover;
 	color: white;
 	transform: rotateY(-180deg);
