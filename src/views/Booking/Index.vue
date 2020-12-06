@@ -1,118 +1,127 @@
 <template>
 	<div class="row pt-3 pb-3">
-		<div class="col-md-12"></div>
-		<div class="col-md-3 h-100">
-			<div class="sticky-top steps">
-				<div
-					v-for="(step, i) in steps"
-					:key="step.order + step.name"
-					class="bg-secondary rounded p-2 mt-2"
-					:style="{
-						'background-color': activeIndex >= i ? '#007bff !important' : null
-					}"
-					:class="{
-						'bg-primary': step.active,
-						'not-allowed': !step.seen && !step.active,
-						pointer: step.seen || step.active
-					}"
-					@click="!finished && step.seen && tabClick(step, i)"
-				>
-					<span class="text-white d-inline">
-						{{ `${step.order}. ${step.name}` }}
-					</span>
-					<div v-if="step.completed" class="text-white d-inline">
-						<svg
-							width="1em"
-							height="1em"
-							viewBox="0 0 16 16"
-							class="bi bi-check"
-							fill="currentColor"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"
-							/>
-						</svg>
-					</div>
-				</div>
-				<div class="col col-md-12 p-0 mt-3">
-					<div class="progress">
-						<div
-							class="progress-bar"
-							role="progressbar"
-							:aria-valuenow="progress"
-							aria-valuemin="0"
-							aria-valuemax="100"
-							:style="{ width: `${progress}%` }"
-						>
-							<strong>{{ progress }}%</strong>
+		<div class="col-md-3">
+			<div class="col-md-12 stepsWrapper sticky-top m-0 p-0">
+				<div class="steps">
+					<div
+						v-for="(step, i) in steps"
+						:key="step.order + step.name"
+						class="bg-secondary rounded p-2 mt-2"
+						:style="{
+							'background-color': activeIndex >= i ? '#007bff !important' : null
+						}"
+						:class="{
+							'bg-primary': step.active,
+							'not-allowed': !step.seen && !step.active,
+							pointer: step.seen || step.active
+						}"
+						@click="!finished && step.seen && tabClick(step, i)"
+					>
+						<span class="text-white d-inline">
+							{{ `${step.order}. ${step.name}` }}
+						</span>
+						<div v-if="step.completed" class="text-white d-inline">
+							<svg
+								width="1em"
+								height="1em"
+								viewBox="0 0 16 16"
+								class="bi bi-check"
+								fill="currentColor"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"
+								/>
+							</svg>
 						</div>
 					</div>
-				</div>
-				<div class="informationWrapper row mt-4">
-					<div class="info col col-md-12">
-						<transition-group name="slide-fade">
-							<h4
-								key="dates"
-								class="title"
-								v-if="
-									getDates.formatted.checkInDate ||
-										getDates.formatted.checkOutDate
-								"
-							>
-								Dates
-							</h4>
+					<div class="col col-md-12 p-0 mt-3">
+						<div class="progress">
 							<div
-								class="infoContent"
-								v-if="getDates.formatted.checkInDate"
-								key="checkInDate"
+								class="progress-bar"
+								role="progressbar"
+								:aria-valuenow="progress"
+								aria-valuemin="0"
+								aria-valuemax="100"
+								:style="{ width: `${progress}%` }"
 							>
-								<strong class="infoSubTitle">Check-in</strong>
-								<span class="infoValue">
-									{{ getDates.formatted.checkInDate }}
-								</span>
+								<strong>{{ progress }}%</strong>
 							</div>
-							<div
-								class="infoContent"
-								v-if="getDates.formatted.checkOutDate"
-								key="checkOutDate"
-							>
-								<strong class="infoSubTitle">Check-out</strong>
-								<span class="infoValue">
-									{{ getDates.formatted.checkOutDate }}
-								</span>
-							</div>
-						</transition-group>
+						</div>
 					</div>
-					<div class="info col col-md-12">
-						<transition-group name="slide-fade">
-							<h4
-								class="title"
-								v-if="getRoomSpecs.type || getRoomSpecs.view"
-								key="title"
-							>
-								Room
-							</h4>
-							<div class="infoContent" v-if="getRoomSpecs.type" key="roomType">
-								<strong class="infoSubTitle">Room type</strong>
-								<span class="infoValue">
-									{{ getRoomSpecs.type }}
-								</span>
-							</div>
-							<div class="infoContent" v-if="getRoomSpecs.view" key="roomView">
-								<strong class="infoSubTitle">Room view</strong>
-								<span class="infoValue">
-									{{ getRoomSpecs.view }}
-								</span>
-							</div>
-						</transition-group>
+					<div class="informationWrapper row mt-4">
+						<div class="info col col-md-12">
+							<transition-group name="slide-fade">
+								<h4
+									key="dates"
+									class="title"
+									v-if="
+										getDates.formatted.checkInDate ||
+											getDates.formatted.checkOutDate
+									"
+								>
+									Dates
+								</h4>
+								<div
+									class="infoContent"
+									v-if="getDates.formatted.checkInDate"
+									key="checkInDate"
+								>
+									<strong class="infoSubTitle">Check-in</strong>
+									<span class="infoValue">
+										{{ getDates.formatted.checkInDate }}
+									</span>
+								</div>
+								<div
+									class="infoContent"
+									v-if="getDates.formatted.checkOutDate"
+									key="checkOutDate"
+								>
+									<strong class="infoSubTitle">Check-out</strong>
+									<span class="infoValue">
+										{{ getDates.formatted.checkOutDate }}
+									</span>
+								</div>
+							</transition-group>
+						</div>
+						<div class="info col col-md-12">
+							<transition-group name="slide-fade">
+								<h4
+									class="title"
+									v-if="getRoomSpecs.type || getRoomSpecs.view"
+									key="title"
+								>
+									Room
+								</h4>
+								<div
+									class="infoContent"
+									v-if="getRoomSpecs.type"
+									key="roomType"
+								>
+									<strong class="infoSubTitle">Room type</strong>
+									<span class="infoValue">
+										{{ getRoomSpecs.type }}
+									</span>
+								</div>
+								<div
+									class="infoContent"
+									v-if="getRoomSpecs.view"
+									key="roomView"
+								>
+									<strong class="infoSubTitle">Room view</strong>
+									<span class="infoValue">
+										{{ getRoomSpecs.view }}
+									</span>
+								</div>
+							</transition-group>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-9">
-			<div class="col-md-12">
+			<div class="col-md-12 childPageWrapper">
 				<router-view
 					@next-step="nextStep"
 					@back-step="backStep"
@@ -212,9 +221,11 @@ export default {
 				.then((result) => {
 					if (result.isConfirmed) {
 						this.$store.dispatch('clearBookingData').then(() => {
-							Swal.fire('Deleted!', 'localStorage cleaned.', 'success').then(() => {
-								this.redirectHomePageModal()
-							})
+							Swal.fire('Deleted!', 'localStorage cleaned.', 'success').then(
+								() => {
+									this.redirectHomePageModal()
+								}
+							)
 						})
 					}
 					this.redirectHomePageModal()
@@ -249,7 +260,8 @@ export default {
 	watch: {
 		$route: {
 			handler(to, from) {
-				if (!from && to.path != this.steps[0].route)
+				console.log(from && from.path, to.path, from, to)
+				if (!from && to.path != this.steps[0].route )
 					return this.$router.replace(this.steps[0].route)
 				this.steps.forEach((step, index) => {
 					if (step.route == to.path) {
@@ -270,8 +282,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.steps {
-	top: 50px;
+.stepsWrapper {
+	top: 30px;
 }
 
 .pointer {
@@ -295,6 +307,12 @@ export default {
 		}
 		.infoValue {
 		}
+	}
+}
+
+.childPageWrapper {
+	@media (max-width: 767.8px) {
+		margin-top: 70px;
 	}
 }
 
