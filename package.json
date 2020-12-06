@@ -1,5 +1,5 @@
 {
-  "name": "case-otel-booking",
+  "name": "case-hotel-booking",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,17 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "bootstrap": "^4.5.3",
+    "bootstrap-vue": "^2.20.1",
     "core-js": "^3.6.5",
-    "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "moment": "^2.29.1",
+    "vue": "^2.6.12",
+    "vue-router": "^3.2.0",
+    "vue-stepper": "^1.4.2",
+    "vue2-datepicker": "^3.8.1",
+    "vue2-daterange-picker": "^0.6.2",
+    "vuex": "^3.6.0",
+    "vuex-map-fields": "^1.4.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
