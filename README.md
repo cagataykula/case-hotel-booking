@@ -1,5 +1,5 @@
 # Booking Project (Test Case)
-![Payment Image](https://raw.githubusercontent.com/cagataykula/case-hotel-booking/master/src/assets/images/introduction/payment-page.jpg)
+![Design Image](https://raw.githubusercontent.com/cagataykula/case-hotel-booking/master/src/assets/images/introduction/full-pages.png)
 
 This project made as a test case for companies by me. I used vuex and local storage. It's a little bit dirty coded but I'll fix it when I have free time.
 
