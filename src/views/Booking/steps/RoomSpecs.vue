@@ -3,73 +3,90 @@
 		class="col-md-12 d-flex justify-content-center flex-column align-items-center"
 	>
 		<h1>Room Specs</h1>
-		<div class="form-row-left mt-5">
-			<div class="form-row align-items-left">
-				Room type:
-				<div class="form-group ml-2">
-					<div class="form-check form-check-inline">
-						<input
-							v-model="room.type"
-							class="form-check-input"
-							type="radio"
-							name="roomType"
-							id="Standart"
-							value="Standart"
-						/>
-						<label class="form-check-label" for="Standart">Standart</label>
+		<ValidationObserver ref="form">
+			<div class="form-row-left mt-5">
+				<ValidationProvider
+					vid="roomType"
+					name="Room type"
+					rules="required"
+					slim
+				>
+					<div class="form-row align-items-left">
+						Room type:
+						<div class="form-group ml-2">
+							<div class="form-check form-check-inline">
+								<input
+									v-model="room.type"
+									class="form-check-input"
+									type="radio"
+									name="roomType"
+									id="Standart"
+									value="Standart"
+								/>
+								<label class="form-check-label" for="Standart">Standart</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input
+									v-model="room.type"
+									class="form-check-input"
+									type="radio"
+									name="roomType"
+									id="Deluxe"
+									value="Deluxe"
+								/>
+								<label class="form-check-label" for="Deluxe">Deluxe</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input
+									v-model="room.type"
+									class="form-check-input"
+									type="radio"
+									name="roomType"
+									id="Suit"
+									value="Suit"
+								/>
+								<label class="form-check-label" for="Suit">Suit</label>
+							</div>
+						</div>
 					</div>
-					<div class="form-check form-check-inline">
-						<input
-							v-model="room.type"
-							class="form-check-input"
-							type="radio"
-							name="roomType"
-							id="Deluxe"
-							value="Deluxe"
-						/>
-						<label class="form-check-label" for="Deluxe">Deluxe</label>
+				</ValidationProvider>
+
+				<ValidationProvider
+					vid="roomView"
+					name="Room View"
+					rules="required"
+					slim
+				>
+					<div class="form-row align-items-left">
+						Room view:
+						<div class="form-group ml-2">
+							<div class="form-check form-check-inline">
+								<input
+									v-model="room.view"
+									class="form-check-input"
+									type="radio"
+									name="roomView"
+									id="Sea"
+									value="Sea"
+								/>
+								<label class="form-check-label" for="Sea">Sea</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input
+									v-model="room.view"
+									class="form-check-input"
+									type="radio"
+									name="roomView"
+									id="Land"
+									value="Land"
+								/>
+								<label class="form-check-label" for="land">Land</label>
+							</div>
+						</div>
 					</div>
-					<div class="form-check form-check-inline">
-						<input
-							v-model="room.type"
-							class="form-check-input"
-							type="radio"
-							name="roomType"
-							id="Suit"
-							value="Suit"
-						/>
-						<label class="form-check-label" for="Suit">Suit</label>
-					</div>
-				</div>
+				</ValidationProvider>
 			</div>
-			<div class="form-row align-items-left">
-				Room view:
-				<div class="form-group ml-2">
-					<div class="form-check form-check-inline">
-						<input
-							v-model="room.view"
-							class="form-check-input"
-							type="radio"
-							name="roomView"
-							id="Sea"
-							value="Sea"
-						/>
-						<label class="form-check-label" for="Sea">Sea</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input
-							v-model="room.view"
-							class="form-check-input"
-							type="radio"
-							name="roomView"
-							id="Land"
-							value="Land"
-						/>
-						<label class="form-check-label" for="land">Land</label>
-					</div>
-				</div>
-			</div>
-		</div>
+		</ValidationObserver>
 		<div class="row mt-2">
 			<div class="row">
 				<button
@@ -79,11 +96,7 @@
 				>
 					&lt; Dates
 				</button>
-				<button
-					type="button"
-					class="btn btn-primary mr-3 ml-3"
-					@click="submit"
-				>
+				<button type="button" class="btn btn-primary mr-3 ml-3" @click="submit">
 					Payment &gt;
 				</button>
 			</div>
@@ -92,6 +105,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
+
 export default {
 	components: {},
 	data() {
@@ -111,7 +126,24 @@ export default {
 			this.$emit('back-step')
 		},
 		submit() {
-			this.$emit('next-step')
+			this.$refs.form.validate().then((valid) => {
+				if (valid) return this.$emit('next-step')
+				else {
+					console.log(typeof this.$refs.form.errors)
+					let errorMessage = ''
+					Object.keys(this.$refs.form.errors).forEach((key) => {
+						this.$refs.form.errors[key].forEach((error) => {
+							errorMessage += error + '<br>'
+						})
+					})
+					Swal.fire({
+						title: 'Missing Fields!',
+						html: errorMessage,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					})
+				}
+			})
 		}
 	},
 	watch: {

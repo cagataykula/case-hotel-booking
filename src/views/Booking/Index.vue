@@ -15,7 +15,7 @@
 						'not-allowed': !step.seen && !step.active,
 						pointer: step.seen || step.active
 					}"
-					@click="step.seen && tabClick(step, i)"
+					@click="!finished && step.seen && tabClick(step, i)"
 				>
 					<span class="text-white d-inline">
 						{{ `${step.order}. ${step.name}` }}
@@ -85,11 +85,13 @@
 							</div>
 						</transition-group>
 					</div>
-					<div
-						class="info col col-md-12"
-					>
+					<div class="info col col-md-12">
 						<transition-group name="slide-fade">
-							<h4 class="title" v-if="getRoomSpecs.type || getRoomSpecs.view" key="title">
+							<h4
+								class="title"
+								v-if="getRoomSpecs.type || getRoomSpecs.view"
+								key="title"
+							>
 								Room
 							</h4>
 							<div class="infoContent" v-if="getRoomSpecs.type" key="roomType">
@@ -122,6 +124,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -154,7 +157,8 @@ export default {
 					seen: false
 				}
 			],
-			activeIndex: 0
+			activeIndex: 0,
+			finished: false
 		}
 	},
 	computed: {
@@ -185,7 +189,50 @@ export default {
 		},
 		finishSteps() {
 			this.steps[this.activeIndex].completed = true
-			alert('You finished steps')
+			this.finished = true
+			const swalMixin = Swal.mixin({
+				customClass: {
+					confirmButton: 'btn btn-primary m-2',
+					cancelButton: 'btn btn-danger m-2'
+				},
+				buttonsStyling: false
+			})
+
+			swalMixin
+				.fire({
+					title: 'You Finished Steps.',
+					html:
+						"You can see the post data from the developer console.<br><br>I'm not keeping credit card data in the localStorage.<br><br>Do you want me to delete other data?",
+					icon: 'success',
+					showCancelButton: true,
+					confirmButtonText: 'Yes',
+					cancelButtonText: 'No',
+					reverseButtons: true
+				})
+				.then((result) => {
+					if (result.isConfirmed) {
+						this.$store.dispatch('clearBookingData').then(() => {
+							Swal.fire('Deleted!', 'localStorage cleaned.', 'success').then(
+								() => {
+									swalMixin
+										.fire({
+											text: 'Do you want me to redirect you to the homepage?',
+											icon: 'success',
+											showCancelButton: true,
+											confirmButtonText: 'Yes',
+											cancelButtonText: 'No',
+											reverseButtons: true
+										})
+										.then((result) => {
+											if (result.isConfirmed) {
+												this.$router.push('/')
+											}
+										})
+								}
+							)
+						})
+					}
+				})
 		}
 	},
 	watch: {

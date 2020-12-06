@@ -6133,6 +6133,11 @@ loglevel@^1.6.8:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
+lottie-web@^5.1.9:
+  version "5.7.4"
+  resolved "https://registry.yarnpkg.com/lottie-web/-/lottie-web-5.7.4.tgz#3b252148e904a0aa9833879ffb64924c85a0888c"
+  integrity sha512-LxqhXlHnHXOPmu+o2ipFKGv42jZLmn/GiEwXP0YC331fFwa+y96OUV22OF9r4i29uWKDciXiJr8tzy6jL8KygA==
+
 loud-rejection@^1.0.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/loud-rejection/-/loud-rejection-1.6.0.tgz#5b46f80147edee578870f086d04821cf998e551f"
@@ -9615,6 +9620,11 @@ svgo@^1.0.0:
     unquote "~1.1.1"
     util.promisify "~1.0.0"
 
+sweetalert2@^10.11.1:
+  version "10.11.1"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-10.11.1.tgz#ba2c2d166bc4b5472773cc8ef7273d75d0f2ff91"
+  integrity sha512-fcl5myOmkITOstRdBmviYEUgfy6CWQFKyMMDLeLtljML6QnjmYh7kfmEVcuFGmemvalrMzuy8NFhPvEKYpQZuw==
+
 table@^5.2.3:
   version "5.4.6"
   resolved "https://registry.yarnpkg.com/table/-/table-5.4.6.tgz#1292d19500ce3f86053b05f0e8e7e4a3bb21079e"
@@ -10186,6 +10196,11 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
+vee-validate@^3.4.5:
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/vee-validate/-/vee-validate-3.4.5.tgz#96a456c309f7bdb2cce62c3b554f96d893e9f6ae"
+  integrity sha512-ZEcLqOAZzSkMhDvPcTx0xcwVOijFnMW9J+BA20j+rDmo24T8RCCqVQyRwwrDrcWJZV2dRYl/yYNa2GB6UCoBvg==
+
 vendors@^1.0.0:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/vendors/-/vendors-1.0.4.tgz#e2b800a53e7a29b93506c3cf41100d16c4c4ad8e"
@@ -10246,6 +10261,13 @@ vue-loader@^15.9.2:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
+
+vue-lottie@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/vue-lottie/-/vue-lottie-0.2.1.tgz#f9f62c34a276e6834255406118fb05b51f765e4b"
+  integrity sha512-zInUX69Ij8MhVR3XArpu4PqqBoufwKxS5UMutWCPm59VUaB5H6GtnaIzf9M+l6aYU+Kr8gF/W9dzWLgRuU6V+Q==
+  dependencies:
+    lottie-web "^5.1.9"
 
 vue-router@^3.2.0:
   version "3.4.9"

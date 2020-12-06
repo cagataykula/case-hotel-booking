@@ -60,12 +60,11 @@ export default new Vuex.Store({
 					checkOutDate: checkOutDate || null
 				},
 				formatted: {
-					checkInDate: checkInDate && moment(new Date(checkInDate)).format(
-						'DD MMMM YYYY'
-					),
-					checkOutDate: checkOutDate && moment(new Date(checkOutDate)).format(
-						'DD MMMM YYYY'
-					)
+					checkInDate:
+						checkInDate && moment(new Date(checkInDate)).format('DD MMMM YYYY'),
+					checkOutDate:
+						checkOutDate &&
+						moment(new Date(checkOutDate)).format('DD MMMM YYYY')
 				}
 			}
 			commit('setDates', dates)
@@ -75,6 +74,43 @@ export default new Vuex.Store({
 			localStorage.setItem('roomType', type)
 			localStorage.setItem('roomView', view)
 			commit('setRoomSpecs', payload)
+		},
+		makePayment({ getters }, payload) {
+			const { checkInDate, checkOutDate } = getters.getDates.raw
+			const dates = { checkInDate, checkOutDate }
+			const roomSpecs = getters.getRoomSpecs
+
+			const postData = {
+				dates,
+				roomSpecs,
+				payment: payload
+			}
+			console.log('BOOKING INFORMATION:', postData)
+		},
+		clearBookingData({ state }) {
+			return new Promise((resolve) => {
+				state.dates = {
+					raw: {
+						checkInDate: null,
+						checkOutDate: null
+					},
+					formatted: {
+						checkInDate: null,
+						checkOutDate: null
+					}
+				}
+
+				state.roomSpecs = {
+					type: null,
+					view: null
+				}
+
+				localStorage.removeItem('checkInDate')
+				localStorage.removeItem('checkOutDate')
+				localStorage.removeItem('roomType')
+				localStorage.removeItem('roomView')
+				resolve()
+			})
 		}
 	}
 })

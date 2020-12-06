@@ -3,37 +3,56 @@
 		class="col-md-12 d-flex justify-content-center flex-column align-items-center"
 	>
 		<h1>Check-in & Check-out Dates</h1>
-		<div class="form-group row mt-5">
-			<h5 class="col-sm-5 col-form-label">
-				Check-in Date
-			</h5>
-			<div class="col-sm-7">
-				<date-picker
-					:get-classes="getRangeClasses"
-					v-model="dates.checkInDate"
-					value-type="date"
-					format="DD MMMM YYYY"
-					placeholder="Select check-in date"
-					:disabled-date="disableAfterEnd"
-				></date-picker>
+		<ValidationObserver ref="form">
+			<div class="form-group row mt-5">
+				<h5 class="col-sm-5 col-form-label">
+					Check-in Date
+				</h5>
+
+				<ValidationProvider
+					vid="checkInDate"
+					name="Check-in date"
+					rules="required"
+					v-slot="{ errors }"
+					slim
+				>
+					<div class="col-sm-7" :class="{ 'validation-error': errors[0] }">
+						<date-picker
+							:get-classes="getRangeClasses"
+							v-model="dates.checkInDate"
+							value-type="date"
+							format="DD MMMM YYYY"
+							placeholder="Select check-in date"
+							:disabled-date="disableAfterEnd"
+						></date-picker>
+					</div>
+				</ValidationProvider>
 			</div>
-		</div>
-		<div class="form-group row">
-			<h5 class="col-sm-5 col-form-label">
-				Check-out Date
-			</h5>
-			<div class="col-sm-7">
-				<date-picker
-					:get-classes="getRangeClasses"
-					type="date"
-					v-model="dates.checkOutDate"
-					value-type="date"
-					format="DD MMMM YYYY"
-					:disabled-date="disableBeforeStart"
-					placeholder="Select check-out date"
-				></date-picker>
+			<div class="form-group row">
+				<h5 class="col-sm-5 col-form-label">
+					Check-out Date
+				</h5>
+				<ValidationProvider
+					vid="name"
+					name="Check-out date"
+					rules="required"
+					v-slot="{ errors }"
+					slim
+				>
+					<div class="col-sm-7" :class="{ 'validation-error': errors[0] }">
+						<date-picker
+							:get-classes="getRangeClasses"
+							type="date"
+							v-model="dates.checkOutDate"
+							value-type="date"
+							format="DD MMMM YYYY"
+							:disabled-date="disableBeforeStart"
+							placeholder="Select check-out date"
+						></date-picker>
+					</div>
+				</ValidationProvider>
 			</div>
-		</div>
+		</ValidationObserver>
 		<div class="w-50 clearfix col-sm-12 float-md-right">
 			<h5 class="float-md-right clearfix">
 				<template v-if="getHowManyDays">
@@ -55,6 +74,7 @@
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import moment from 'moment'
+import Swal from 'sweetalert2'
 
 export default {
 	components: {
@@ -108,14 +128,33 @@ export default {
 		},
 		disableBeforeStart(date) {
 			const checkInDate = moment(this.dates.checkInDate)
-			return date < checkInDate || false
+			const yesterday = moment().subtract(1, 'days')
+			return (date < checkInDate)|| (yesterday >= date)
 		},
 		disableAfterEnd(date) {
 			const checkOutDate = moment(this.dates.checkOutDate)
-			return date > checkOutDate || false
+			const yesterday = moment().subtract(1, 'days')
+			return (date > checkOutDate) || (yesterday >= date)
 		},
 		submit() {
-			this.$emit('next-step')
+			this.$refs.form.validate().then((valid) => {
+				if (valid) return this.$emit('next-step')
+				else {
+					console.log(typeof this.$refs.form.errors)
+					let errorMessage = ''
+					Object.keys(this.$refs.form.errors).forEach((key) => {
+						this.$refs.form.errors[key].forEach((error) => {
+							errorMessage += error + '<br>'
+						})
+					})
+					Swal.fire({
+						title: 'Missing Fields!',
+						html: errorMessage,
+						icon: 'error',
+						confirmButtonText: 'OK'
+					})
+				}
+			})
 		}
 	},
 	watch: {
@@ -133,3 +172,12 @@ export default {
 	}
 }
 </script>
+
+<style lang="scss" scoped>
+.validation-error .mx-datepicker /deep/ .mx-input-wrapper {
+	input.mx-input {
+		border: 1px solid red !important;
+		transition: border 0.4s ease-in-out;
+	}
+}
+</style>
